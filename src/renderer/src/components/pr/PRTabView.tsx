@@ -60,7 +60,7 @@ export function PRTabView() {
                 className={`pr-conv ${
                   c.role === 'event' ? 'is-event' :
                   c.role === 'bot' ? 'is-bot' : 'is-user'
-                }`}
+                } ${c.role !== 'event' && c.externalId === null ? 'is-pending' : ''}`}
               >
                 <div className="av">
                   {c.role === 'event' ? '·' : c.who[0].toUpperCase()}

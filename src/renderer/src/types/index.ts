@@ -151,6 +151,8 @@ export type Tab =
 
 export interface OvComment {
   id: number;
+  externalId: string | null;
+  clientOpId: string | null;
   file: string;
   lr: string;
   line: number;
@@ -162,6 +164,8 @@ export interface OvComment {
 
 export interface IssueCommentItem {
   id: number;
+  externalId: string | null;
+  clientOpId: string | null;
   who: string;
   role: string;
   initials: string;

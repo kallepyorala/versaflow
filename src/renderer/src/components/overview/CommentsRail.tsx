@@ -62,7 +62,7 @@ export function CommentsRail({ collapsed = false, onToggle }: CommentsRailProps)
       </div>
       <div className="ov-rail-list">
         {filtered.map((c) => (
-          <div key={c.id} className={`ov-cmt ${activeCmt === c.id ? 'active' : ''}`} onClick={() => setActiveCmt(c.id)}>
+          <div key={c.id} className={`ov-cmt ${activeCmt === c.id ? 'active' : ''} ${c.externalId === null ? 'is-pending' : ''}`} onClick={() => setActiveCmt(c.id)}>
             <div className="ov-cmt-top">
               <span className="ov-cmt-anchor">{c.file.split('/').pop()}:{c.lr}</span>
               <span className={`ov-cmt-stat ${c.status}`}>{c.status}</span>

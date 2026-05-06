@@ -3,7 +3,7 @@ import { IssueAvatar } from './IssueAvatar';
 
 export function IssueComment({ c, isLast }: { c: IssueCommentItem; isLast: boolean }) {
   return (
-    <div className={`iv-cmt ${c.agent ? 'is-agent' : ''}`}>
+    <div className={`iv-cmt ${c.agent ? 'is-agent' : ''} ${c.externalId === null ? 'is-pending' : ''}`}>
       <div className="iv-cmt-rail">
         <IssueAvatar c={c} />
         {!isLast && <span className="iv-cmt-thread" />}

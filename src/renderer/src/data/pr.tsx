@@ -7,6 +7,9 @@ export interface PRDescBlock {
 }
 
 export interface PRConvEntry {
+  id: number;
+  externalId: string | null;
+  clientOpId: string | null;
   who: string;
   role: 'bot' | 'user' | 'event';
   when: string;
@@ -44,11 +47,11 @@ export const PR_DATA = {
     { type: 'p', text: 'Reducer change is behind feature flag billing.proration.v2; rollout via 5% → 25% → 100%. Backfill is idempotent and dry-run-able.' },
   ] as PRDescBlock[],
   conv: [
-    { who: 'claude', role: 'bot',  when: '32m ago', text: 'Opened PR. CI is running; I added two new fixtures in proration.fixtures.ts covering the day-28-of-30 and the same-day-switch cases that NUME-2841 reported.' },
-    { who: 'kalle',  role: 'user', when: '21m ago', text: 'Looks right. Did you check what happens when the user switches BACK to the cheaper tier mid-cycle? Should be a refund line, not a charge.' },
-    { who: 'claude', role: 'bot',  when: '18m ago', text: 'Good catch — the v1 logic just no-op\'d that case. Added a downgrade branch that emits a refund line with negative amount. Fixture proration.downgrade.test.ts covers it.' },
-    { who: 'event',  role: 'event', when: '12m ago', text: <><b>gpt-5</b> requested changes — see comment on <code>src/billing/reducer.ts:142</code></> },
-    { who: 'event',  role: 'event', when: '6m ago',  text: <><b>verifier</b> reported a regression in <code>billing.invoice.snapshot</code> — 3 of 18 snapshots changed</> },
+    { id: 1, externalId: 'gh_node_PR_C_1', clientOpId: null, who: 'claude', role: 'bot',  when: '32m ago', text: 'Opened PR. CI is running; I added two new fixtures in proration.fixtures.ts covering the day-28-of-30 and the same-day-switch cases that NUME-2841 reported.' },
+    { id: 2, externalId: 'gh_node_PR_C_2', clientOpId: null, who: 'kalle',  role: 'user', when: '21m ago', text: 'Looks right. Did you check what happens when the user switches BACK to the cheaper tier mid-cycle? Should be a refund line, not a charge.' },
+    { id: 3, externalId: 'gh_node_PR_C_3', clientOpId: null, who: 'claude', role: 'bot',  when: '18m ago', text: 'Good catch — the v1 logic just no-op\'d that case. Added a downgrade branch that emits a refund line with negative amount. Fixture proration.downgrade.test.ts covers it.' },
+    { id: 4, externalId: 'gh_node_PR_E_4', clientOpId: null, who: 'event',  role: 'event', when: '12m ago', text: <><b>gpt-5</b> requested changes — see comment on <code>src/billing/reducer.ts:142</code></> },
+    { id: 5, externalId: 'gh_node_PR_E_5', clientOpId: null, who: 'event',  role: 'event', when: '6m ago',  text: <><b>verifier</b> reported a regression in <code>billing.invoice.snapshot</code> — 3 of 18 snapshots changed</> },
   ] as PRConvEntry[],
   commits: [
     { sha: 'a4f7c12', msg: 'billing: add prorationCredit and switch-action branch', when: '1h ago' },

@@ -1846,6 +1846,16 @@
   }
   .ov-cmt-foot button:hover { color: var(--foreground); border-color: var(--vf-ink-700); }
 
+  /* Pending (optimistic) comment — outbox not yet acked */
+  .ov-cmt.is-pending,
+  .iv-cmt.is-pending,
+  .pr-conv.is-pending {
+    opacity: 0.62;
+    font-style: italic;
+  }
+  .ov-cmt.is-pending .ov-cmt-foot,
+  .iv-cmt.is-pending .iv-cmt-rx { pointer-events: none; }
+
   .ov-rail-foot { padding: 10px; border-top: 1px solid var(--vf-ink-800); }
 
   /* Collapse toggle button in rail header */
