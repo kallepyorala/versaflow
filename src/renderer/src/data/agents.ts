@@ -1,0 +1,55 @@
+import type { Agent } from '@/types';
+
+export const AGENTS: Agent[] = [
+  {
+    key: 'claude', letter: 'C', color: 'c',
+    name: 'claude', model: 'sonnet-4.5',
+    status: 'running', state: 'active',
+    progress: 62, files: 14, ok: 42, fail: 0, eta: '00:48',
+    timecode: '02:41',
+    nowDoing: 'wiring useBilling hook',
+    feed: [
+      { tn: 'read_file',  arg: 'src/billing/reducer.ts', ok: '184L' },
+      { tn: 'edit_file',  arg: 'src/billing/reducer.ts', ok: '+84 −37' },
+      { tn: 'edit_file',  arg: 'src/billing/useBilling.ts', ok: '+22 −14' },
+      { tn: 'create',     arg: 'src/billing/actions.ts', ok: '+41' },
+      { tn: 'edit_file',  arg: 'src/checkout/CheckoutForm.tsx', ok: '+8 −5' },
+      { tn: 'vitest',     arg: 'src/billing', ok: '42/42 ✓' },
+    ],
+    typing: 'wiring useBilling()',
+  },
+  {
+    key: 'codex', letter: 'X', color: 'x',
+    name: 'codex', model: '1.5-pro',
+    status: 'leading', state: 'leading',
+    progress: 100, files: 9, ok: 48, fail: 0, eta: '—',
+    timecode: '04:08',
+    nowDoing: 'promoted candidate · awaiting verdict',
+    feed: [
+      { tn: 'read_file',  arg: 'src/billing/reducer.ts', ok: '184L' },
+      { tn: 'plan',       arg: 'split into slice actions', ok: '✓' },
+      { tn: 'edit_file',  arg: 'src/billing/reducer.ts', ok: '+71 −37' },
+      { tn: 'edit_file',  arg: 'src/billing/useBilling.ts', ok: '+18 −12' },
+      { tn: 'vitest',     arg: 'src/billing', ok: '48/48 ✓' },
+      { tn: 'lint',       arg: 'src/', ok: '0 issues' },
+      { tn: 'build',      arg: 'vite production', ok: 'ok 4.2s' },
+    ],
+    typing: null,
+  },
+  {
+    key: 'gpt', letter: 'G', color: 'g',
+    name: 'gpt-5', model: 'thinking-1',
+    status: 'errored', state: 'errored',
+    progress: 70, files: 6, ok: 31, fail: 4, eta: '—',
+    timecode: '03:22',
+    nowDoing: 'exited · 4 tests failing',
+    feed: [
+      { tn: 'read_file',  arg: 'src/billing/reducer.ts', ok: '184L' },
+      { tn: 'edit_file',  arg: 'src/billing/reducer.ts', ok: '+44 −32' },
+      { tn: 'vitest',     arg: 'src/billing', fail: '31/35 ✗' },
+      { tn: 'rollback',   arg: 'reducer.ts', ok: '✓' },
+      { tn: 'exit',       arg: '1 — tests failing after retry', fail: '✗' },
+    ],
+    typing: null,
+  },
+];

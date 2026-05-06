@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <title>Versaflow</title>
+  <!-- V (foreground color, no tile behind it) -->
+  <path d="M14 16 L 22 16 L 32 38 L 42 16 L 50 16 L 36 46 Q 32 53, 28 46 Z"
+        fill="currentColor"/>
+  <!-- Flow accent + winner dot -->
+  <rect x="10" y="30" width="34" height="4" rx="2"
+        fill="var(--logo-accent, #f08a4b)"/>
+  <circle cx="50" cy="32" r="4.5"
+          fill="var(--logo-accent, #f08a4b)"/>
+</svg>

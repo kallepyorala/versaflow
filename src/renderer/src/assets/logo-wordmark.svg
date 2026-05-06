@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 367 80" fill="none" preserveAspectRatio="xMinYMid meet">
+  <title>Versaflow</title>
+  <g fill="currentColor">
+    <!-- V (sharp) -->
+    <path d="M2 16 L 18 16 L 32 56 L 46 16 L 62 16 L 42 70 Q 32 80, 22 70 Z"/>
+    <!-- e -->
+    <path d="M64 50 Q 64 28, 84 28 Q 104 28, 104 48 L 104 52 L 76 52 Q 78 62, 86 62 Q 92 62, 96 58 L 102 65 Q 96 72, 86 72 Q 64 72, 64 50 Z M 76 44 L 92 44 Q 90 36, 84 36 Q 78 36, 76 44 Z"/>
+    <!-- r -->
+    <path d="M108 30 L 118 30 L 118 38 Q 122 28, 132 28 L 132 39 Q 120 39, 118 50 L 118 70 L 108 70 Z"/>
+    <!-- s -->
+    <path d="M134 64 L 140 57 Q 144 64, 152 64 Q 158 64, 158 60 Q 158 57, 152 56 L 146 54 Q 134 51, 134 41 Q 134 28, 150 28 Q 162 28, 168 35 L 162 42 Q 158 36, 150 36 Q 144 36, 144 40 Q 144 43, 150 44 L 156 46 Q 168 49, 168 59 Q 168 72, 152 72 Q 140 72, 134 64 Z"/>
+    <!-- a -->
+    <path d="M174 50 Q 174 28, 196 28 Q 210 28, 210 38 L 210 70 L 200 70 L 200 65 Q 196 72, 188 72 Q 174 72, 174 60 Q 174 50, 188 48 L 200 46 L 200 44 Q 200 38, 192 38 Q 186 38, 184 44 Z M 184 58 Q 184 64, 190 64 Q 198 64, 200 56 L 200 53 L 192 54 Q 184 55, 184 58 Z"/>
+    <!-- f (stem at 222; the crossbar is replaced by the accent rect below) -->
+    <path d="M222 30 Q 222 12, 240 12 Q 248 12, 252 14 L 250 22 Q 246 20, 242 20 Q 232 20, 232 30 L 232 70 L 222 70 Z"/>
+  </g>
+  <!-- Accent flow: starts left of f, runs through where the crossbar
+       would be, dot floats midway between the f stem and the l -->
+  <rect x="212" y="34" width="39" height="5" rx="2.5"
+        fill="var(--logo-accent, #f08a4b)"/>
+  <circle cx="250" cy="36.5" r="5.5"
+          fill="var(--logo-accent, #f08a4b)"/>
+  <g fill="currentColor">
+    <!-- l -->
+    <path d="M257 8 L 267 8 L 267 70 L 257 70 Z"/>
+    <!-- o -->
+    <path d="M273 50 Q 273 28, 293 28 Q 313 28, 313 50 Q 313 72, 293 72 Q 273 72, 273 50 Z M 283 50 Q 283 64, 293 64 Q 303 64, 303 50 Q 303 36, 293 36 Q 283 36, 283 50 Z"/>
+    <!-- w (sharp, narrower) -->
+    <path d="M315 30 L 325 30 L 330 58 L 337 30 L 345 30 L 352 58 L 357 30 L 367 30 L 358 70 Q 354 76, 349 70 L 341 46 L 333 70 Q 328 76, 324 70 Z"/>
+  </g>
+</svg>

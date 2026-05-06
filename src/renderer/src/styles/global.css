@@ -1,0 +1,28 @@
+@import "./tokens.css";
+@import "./cockpit.css";
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font: 400 var(--t-sm)/1.55 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* macOS hiddenInset draws real traffic lights in the top-left corner.
+   Reserve space for them so the cockpit title content doesn't sit underneath. */
+.titlebar { padding-left: 78px; }
+
+/* Inline-SVG logos: size to the container, preserve aspect ratio. */
+.side-brand-mark, .side-brand-word { display: inline-flex; align-items: center; }
+.side-brand-mark > svg,
+.side-brand-word > svg {
+  height: 100%;
+  width: auto;
+  display: block;
+}
+
+/* Logo color hook: drives the flow line + winner dot in mark + wordmark. */
+.side-brand-mark, .side-brand-word { --logo-accent: var(--vf-flux-500); }

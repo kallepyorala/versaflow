@@ -1,0 +1,201 @@
+/* ============================================================
+   Versaflow — Design Tokens (refresh)
+   ----------------------------------------------------------------
+   Built on top of the existing shadcn token set in src/styles/globals.css,
+   but pushed toward a fresher, more confident developer aesthetic:
+     • brighter, slightly greener teal primary (energy, signal)
+     • new warm amber accent ("flux") to complement the cool teal
+     • more depth in dark mode (3 surface tiers: bg, surface-1, surface-2)
+     • slimmer, more deliberate type scale with a serif display option
+   The variable NAMES match shadcn so this file can be dropped in as-is.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap");
+
+:root {
+  /* ── Brand ─────────────────────────────────────────────── */
+  --vf-teal-50:  oklch(0.97 0.02 188);
+  --vf-teal-100: oklch(0.93 0.05 188);
+  --vf-teal-200: oklch(0.87 0.09 188);
+  --vf-teal-300: oklch(0.78 0.12 188);
+  --vf-teal-400: oklch(0.70 0.14 188);   /* primary (dark mode)  */
+  --vf-teal-500: oklch(0.62 0.14 188);
+  --vf-teal-600: oklch(0.52 0.13 188);   /* primary (light mode) */
+  --vf-teal-700: oklch(0.42 0.11 188);
+  --vf-teal-800: oklch(0.32 0.08 188);
+  --vf-teal-900: oklch(0.22 0.05 188);
+
+  /* "Flux" — the warm accent. Used very sparingly for active runs,
+     winning attempts, and the mark in the Race & Judge product surface. */
+  --vf-flux-50:  oklch(0.97 0.03 50);
+  --vf-flux-200: oklch(0.88 0.10 50);
+  --vf-flux-400: oklch(0.74 0.16 50);    /* hover / glow */
+  --vf-flux-500: oklch(0.68 0.18 45);    /* default accent */
+  --vf-flux-600: oklch(0.60 0.20 38);    /* press */
+  --vf-flux-700: oklch(0.50 0.18 35);
+
+  /* Semantic signals */
+  --vf-success: oklch(0.68 0.16 152);
+  --vf-warning: oklch(0.78 0.16 78);
+  --vf-danger:  oklch(0.62 0.22 25);
+  --vf-info:    oklch(0.65 0.15 240);
+
+  /* Neutral ramp — slightly cooler than shadcn slate */
+  --vf-ink-50:  oklch(0.985 0.005 240);
+  --vf-ink-100: oklch(0.96 0.008 240);
+  --vf-ink-200: oklch(0.92 0.010 240);
+  --vf-ink-300: oklch(0.85 0.013 240);
+  --vf-ink-400: oklch(0.70 0.015 240);
+  --vf-ink-500: oklch(0.55 0.018 240);
+  --vf-ink-600: oklch(0.42 0.020 240);
+  --vf-ink-700: oklch(0.30 0.022 245);
+  --vf-ink-750: oklch(0.24 0.022 248);
+  --vf-ink-800: oklch(0.20 0.022 250);   /* surface-2 */
+  --vf-ink-850: oklch(0.165 0.020 250);  /* surface-1 */
+  --vf-ink-900: oklch(0.14 0.018 250);   /* bg */
+  --vf-ink-950: oklch(0.10 0.014 250);
+
+  /* ── shadcn semantic mappings (LIGHT) ────────────────── */
+  --radius: 0.625rem;
+
+  --background: var(--vf-ink-50);
+  --foreground: oklch(0.18 0.02 248);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.02 248);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.02 248);
+
+  --primary: var(--vf-teal-600);
+  --primary-foreground: oklch(0.99 0.01 188);
+  --secondary: var(--vf-ink-200);
+  --secondary-foreground: oklch(0.22 0.02 248);
+  --muted: var(--vf-ink-100);
+  --muted-foreground: var(--vf-ink-500);
+  --accent: var(--vf-flux-200);
+  --accent-foreground: oklch(0.30 0.10 50);
+  --destructive: var(--vf-danger);
+  --destructive-foreground: oklch(0.99 0.01 25);
+  --border: var(--vf-ink-200);
+  --input: var(--vf-ink-200);
+  --ring: var(--vf-teal-500);
+
+  --info: var(--vf-info);
+  --info-foreground: oklch(0.99 0.01 240);
+  --success: var(--vf-success);
+  --success-foreground: oklch(0.99 0.01 152);
+  --warning: var(--vf-warning);
+  --warning-foreground: oklch(0.22 0.04 78);
+  --invert: var(--vf-ink-900);
+  --invert-foreground: var(--vf-ink-50);
+
+  /* Versaflow-only extensions */
+  --vf-surface-1: var(--card);
+  --vf-surface-2: var(--vf-ink-100);
+  --vf-glow: 0 0 0 1px color-mix(in oklch, var(--primary) 30%, transparent),
+             0 0 24px color-mix(in oklch, var(--primary) 18%, transparent);
+
+  /* ── Type ────────────────────────────────────────────── */
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+
+  --t-xs:    0.75rem;     /* 12 */
+  --t-sm:    0.8125rem;   /* 13 — primary UI body in app */
+  --t-base:  0.875rem;    /* 14 */
+  --t-md:    1rem;        /* 16 */
+  --t-lg:    1.125rem;    /* 18 */
+  --t-xl:    1.375rem;    /* 22 */
+  --t-2xl:   1.75rem;     /* 28 */
+  --t-3xl:   2.25rem;     /* 36 */
+  --t-display: clamp(2.5rem, 5vw, 4rem);
+
+  /* ── Spacing & shape ─────────────────────────────────── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-pill: 999px;
+
+  /* ── Elevation ───────────────────────────────────────── */
+  --shadow-xs: 0 1px 0 0 rgb(15 23 42 / 0.04);
+  --shadow-sm: 0 1px 2px -1px rgb(15 23 42 / 0.08), 0 1px 1px rgb(15 23 42 / 0.04);
+  --shadow-md: 0 4px 8px -2px rgb(15 23 42 / 0.10), 0 2px 4px -2px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 12px 24px -8px rgb(15 23 42 / 0.18), 0 4px 8px -4px rgb(15 23 42 / 0.08);
+
+  /* ── Motion ──────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-strong: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+  --dur-slow: 280ms;
+}
+
+/* ── DARK (default for the app) ───────────────────────── */
+.dark, [data-theme="dark"] {
+  --background:        var(--vf-ink-900);
+  --foreground:        oklch(0.96 0.005 240);
+  --card:              var(--vf-ink-850);
+  --card-foreground:   oklch(0.96 0.005 240);
+  --popover:           var(--vf-ink-800);
+  --popover-foreground:oklch(0.96 0.005 240);
+
+  --primary:            var(--vf-teal-400);
+  --primary-foreground: var(--vf-ink-900);
+  --secondary:          var(--vf-ink-800);
+  --secondary-foreground: oklch(0.94 0.01 240);
+  --muted:              var(--vf-ink-800);
+  --muted-foreground:   var(--vf-ink-400);
+  --accent:             color-mix(in oklch, var(--vf-flux-500) 20%, var(--vf-ink-800));
+  --accent-foreground:  var(--vf-flux-200);
+  --destructive:        oklch(0.66 0.20 25);
+  --destructive-foreground: oklch(0.99 0.01 25);
+  --border:             var(--vf-ink-750);
+  --input:              var(--vf-ink-750);
+  --ring:               var(--vf-teal-400);
+
+  --info:    oklch(0.72 0.14 240);
+  --success: oklch(0.72 0.15 152);
+  --warning: oklch(0.78 0.16 78);
+
+  --vf-surface-1: var(--card);
+  --vf-surface-2: var(--vf-ink-800);
+}
+
+/* ── Semantic typography (use these classes for text) ── */
+.vf-display {
+  font-family: var(--font-display);
+  font-size: var(--t-display);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+}
+.vf-h1 { font: 600 var(--t-3xl)/1.15 var(--font-sans); letter-spacing: -0.02em; }
+.vf-h2 { font: 600 var(--t-2xl)/1.2  var(--font-sans); letter-spacing: -0.018em; }
+.vf-h3 { font: 600 var(--t-xl)/1.25  var(--font-sans); letter-spacing: -0.012em; }
+.vf-h4 { font: 600 var(--t-lg)/1.3   var(--font-sans); letter-spacing: -0.008em; }
+.vf-body  { font: 400 var(--t-sm)/1.55 var(--font-sans); }
+.vf-body-md { font: 400 var(--t-md)/1.6 var(--font-sans); }
+.vf-small { font: 400 var(--t-xs)/1.45 var(--font-sans); color: var(--muted-foreground); }
+.vf-mono  { font: 500 var(--t-xs)/1.4  var(--font-mono); letter-spacing: -0.01em; }
+.vf-mono-sm { font: 500 0.6875rem/1.3 var(--font-mono); letter-spacing: 0.02em; }
+
+/* Editorial micro-label for section headers */
+.vf-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
