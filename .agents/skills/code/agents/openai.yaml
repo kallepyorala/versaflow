@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Issue"
+  short_description: "Implement the next GitHub issue"
+  default_prompt: "Use $code to implement the next open GitHub issue."
