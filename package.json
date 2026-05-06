@@ -8,7 +8,8 @@
     "dev": "electron-vite dev",
     "start": "electron-vite preview",
     "build": "electron-vite build",
-    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json"
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "sidecar:build": "cargo build --release --manifest-path sidecar/Cargo.toml"
   },
   "dependencies": {
     "react": "^18.3.1",
