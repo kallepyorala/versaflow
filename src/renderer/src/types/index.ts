@@ -41,6 +41,29 @@ export interface PullRequest {
   state: PRState;
 }
 
+export interface Workspace {
+  id: number;
+  name: string;
+  rootPath: string;
+}
+
+export type WorktreeOrigin = 'manual' | 'agent' | 'pr_checkout';
+
+export interface Worktree {
+  id: number;
+  workspaceId: number;
+  issueId: number | null;
+  path: string;
+  branch: string;
+  baseBranch?: string;
+  baseSha?: string;
+  headSha?: string;
+  ahead: number;
+  behind: number;
+  isActive: boolean;
+  origin: WorktreeOrigin;
+}
+
 export interface IssueGroup {
   title: string;
   key: IssueStatus;

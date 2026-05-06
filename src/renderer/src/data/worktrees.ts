@@ -1,0 +1,47 @@
+import type { Worktree } from '@/types';
+import { WORKSPACE } from './workspaces';
+
+export const WORKTREES_VF_1284: Worktree[] = [
+  {
+    id: 101,
+    workspaceId: WORKSPACE.id,
+    issueId: 1284,
+    path: '~/Projects/acme/worktrees/vf-1284-refactor-billing-reducer',
+    branch: 'vf-1284-refactor-billing-reducer',
+    baseBranch: 'main',
+    baseSha: 'a3f7c12',
+    headSha: 'e2b9510',
+    ahead: 6,
+    behind: 0,
+    isActive: true,
+    origin: 'manual',
+  },
+  {
+    id: 102,
+    workspaceId: WORKSPACE.id,
+    issueId: 1284,
+    path: '~/Projects/acme/worktrees/vf-1284-spike-immer',
+    branch: 'vf-1284-spike-immer',
+    baseBranch: 'main',
+    baseSha: 'a3f7c12',
+    headSha: '8e2b09d',
+    ahead: 2,
+    behind: 0,
+    isActive: false,
+    origin: 'agent',
+  },
+  {
+    id: 103,
+    workspaceId: WORKSPACE.id,
+    issueId: 1284,
+    path: '~/Projects/acme/worktrees/vf-1284-rtk-experiment',
+    branch: 'vf-1284-rtk-experiment',
+    baseBranch: 'main',
+    baseSha: 'a3f7c12',
+    headSha: 'd1c4f88',
+    ahead: 4,
+    behind: 1,
+    isActive: false,
+    origin: 'agent',
+  },
+];

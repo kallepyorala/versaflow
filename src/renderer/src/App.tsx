@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import type { Tab, Telemetry, Tweaks as TweaksType } from '@/types';
+import type { Tab, Telemetry, Tweaks as TweaksType, Worktree } from '@/types';
+import { WORKSPACE } from '@/data/workspaces';
+import { WORKTREES_VF_1284 } from '@/data/worktrees';
 import { BASE_TICKER, LIVE_EVENTS } from '@/data/ticker';
 import { ZenContext } from '@/context/zen';
 import { Titlebar } from '@/components/layout/Titlebar';
@@ -35,12 +37,10 @@ const TWEAK_DEFAULTS: TweaksType = {
 export function App() {
   const [tweaks, setTweak] = useTweaks<TweaksType>(TWEAK_DEFAULTS);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [worktrees, setWorktrees] = useState([
-    'vf-1284-refactor-billing-reducer',
-    'vf-1284-spike-immer',
-    'vf-1284-rtk-experiment',
-  ]);
-  const [activeWorktree, setActiveWorktree] = useState('vf-1284-refactor-billing-reducer');
+  const [worktrees, setWorktrees] = useState<Worktree[]>(WORKTREES_VF_1284);
+  const [activeWorktree, setActiveWorktree] = useState<Worktree | null>(
+    WORKTREES_VF_1284.find((w) => w.isActive) ?? WORKTREES_VF_1284[0] ?? null,
+  );
   const [wtDialogOpen, setWtDialogOpen] = useState(false);
 
   const [telem, setTelem] = useState<Telemetry>({
@@ -227,9 +227,11 @@ export function App() {
                   <span style={{ color: 'var(--vf-teal-300)', fontFamily: 'var(--font-mono)', fontSize: 11 }}>main</span>
                   <span style={{ color: 'var(--vf-ink-700)' }}>←</span>
                   <BranchSelector
-                    branches={worktrees}
-                    current={activeWorktree}
-                    onSelect={setActiveWorktree}
+                    branches={worktrees.map((w) => w.branch)}
+                    current={activeWorktree?.branch ?? ''}
+                    onSelect={(branch) =>
+                      setActiveWorktree(worktrees.find((w) => w.branch === branch) ?? null)
+                    }
                     onAdd={() => setWtDialogOpen(true)}
                     baseBranch="main"
                   />
@@ -334,12 +336,24 @@ export function App() {
       <AddWorktreeDialog
         open={wtDialogOpen}
         baseBranch="main"
-        currentBranch={activeWorktree}
-        existing={worktrees}
+        currentBranch={activeWorktree?.branch ?? ''}
+        existing={worktrees.map((w) => w.branch)}
         onCancel={() => setWtDialogOpen(false)}
         onConfirm={(name) => {
-          setWorktrees((ws) => [...ws, name]);
-          setActiveWorktree(name);
+          const next: Worktree = {
+            id: Date.now(),
+            workspaceId: WORKSPACE.id,
+            issueId: activeWorktree?.issueId ?? null,
+            path: `${WORKSPACE.rootPath}/worktrees/${name}`,
+            branch: name,
+            baseBranch: 'main',
+            ahead: 0,
+            behind: 0,
+            isActive: true,
+            origin: 'manual',
+          };
+          setWorktrees((ws) => [...ws.map((w) => ({ ...w, isActive: false })), next]);
+          setActiveWorktree(next);
           setWtDialogOpen(false);
         }}
       />
