@@ -38,6 +38,12 @@ const api = {
     return () => { offBoot(); offDelta(); };
   },
 
+  // BOOT and DELTA share the `subscribe(cb)` channel for the §7 contract,
+  // but consumers that need to distinguish (e.g. the store, which hydrates
+  // on BOOT and applies on DELTA) can listen on each one separately.
+  onBoot: (cb: (payload: Uint8Array) => void): (() => void) => subscribeBoot(cb),
+  onDelta: (cb: (payload: Uint8Array) => void): (() => void) => subscribeDelta(cb),
+
   onEvent: (cb: (event: unknown) => void): (() => void) => subscribeEvent(cb),
 };
 

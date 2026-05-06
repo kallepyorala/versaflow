@@ -64,6 +64,7 @@ async fn handle_frame(
             json!({ "id": id, "ok": true, "result": { "pong": pong } })
         }
         "vf:init" => handle_init(&id, &params, db).await,
+        "vf:ready" => handle_ready(&id, db, out).await?,
         _ => json!({
             "id": id,
             "ok": false,
@@ -77,6 +78,38 @@ async fn handle_frame(
     let body = serde_json::to_vec(&response)?;
     framing::write_frame(out, framing::kind::RESULT, &body).await?;
     Ok(())
+}
+
+async fn handle_ready(id: &Value, _db: db::DbHandle, out: &mut Stdout) -> std::io::Result<Value> {
+    // Real workspace seeding lands in #19 — for now emit an empty BOOT so
+    // the renderer's decode path is exercised end-to-end.
+    let snapshot = json!({
+        "workspace": null,
+        "context": {},
+        "issues": [],
+        "worktrees": [],
+        "prs": [],
+        "comments": [],
+        "checks": [],
+        "sessions": [],
+        "ticker": [],
+        "uiState": {},
+    });
+    match rmp_serde::to_vec_named(&snapshot) {
+        Ok(body) => {
+            framing::write_frame(out, framing::kind::BOOT, &body).await?;
+            tracing::info!(bytes = body.len(), "BOOT emitted");
+            Ok(json!({ "id": id, "ok": true, "result": { "ready": true } }))
+        }
+        Err(err) => {
+            tracing::error!(error = ?err, "BOOT msgpack encode failed");
+            Ok(json!({
+                "id": id,
+                "ok": false,
+                "error": { "code": "boot_encode_failed", "message": err.to_string() },
+            }))
+        }
+    }
 }
 
 async fn handle_init(id: &Value, params: &Value, db: db::DbHandle) -> Value {

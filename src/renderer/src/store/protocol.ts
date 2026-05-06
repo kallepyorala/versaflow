@@ -117,7 +117,9 @@ export interface TickerEventRow {
 }
 
 export interface BootSnapshot {
-  workspace: Workspace;
+  // Null until the user has configured at least one workspace; once seeded
+  // (issue #19) the sidecar populates it from `workspace` table.
+  workspace: Workspace | null;
   context: { worktreeId?: number; issueId?: number; prId?: number };
   issues: IssueRow[];
   worktrees: Worktree[];
