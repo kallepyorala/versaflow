@@ -1,3 +1,5 @@
+mod framing;
+
 use tokio::io::{AsyncReadExt, BufReader};
 use tracing_subscriber::EnvFilter;
 
@@ -8,7 +10,9 @@ async fn main() -> std::io::Result<()> {
         .with_writer(std::io::stderr)
         .init();
 
-    tracing::info!("sidecar ready");
+    let mut stdout = tokio::io::stdout();
+    let ready = br#"{"type":"sidecar.ready"}"#;
+    framing::write_frame(&mut stdout, framing::kind::EVENT, ready).await?;
 
     let stdin = tokio::io::stdin();
     let mut reader = BufReader::new(stdin);

@@ -1,6 +1,7 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'child_process';
 import { app } from 'electron';
 import { join } from 'path';
+import { FrameCodec, FrameKind, type DecodedFrame } from './frameCodec';
 
 const BACKOFF_STEPS_MS = [1000, 2000, 4000, 8000];
 const HEALTHY_RESET_MS = 60_000;
@@ -36,6 +37,14 @@ export class SidecarManager {
 
     child.stderr.pipe(process.stderr);
 
+    const codec = new FrameCodec();
+    child.stdout.on('data', (chunk: Buffer) => codec.push(chunk));
+    codec.on('frame', (frame: DecodedFrame) => this.onFrame(frame));
+    codec.on('error', (err: Error) => {
+      console.error('[sidecar] frame codec error, killing child:', err.message);
+      try { child.kill('SIGKILL'); } catch { /* ignore */ }
+    });
+
     child.on('exit', (code, signal) => {
       const wasUp = Date.now() - this.startedAt;
       console.info(`[sidecar] exited code=${code} signal=${signal} after ${wasUp}ms`);
@@ -56,6 +65,19 @@ export class SidecarManager {
     child.on('error', (err) => {
       console.error('[sidecar] spawn error:', err);
     });
+  }
+
+  private onFrame(frame: DecodedFrame): void {
+    if (frame.kind === FrameKind.EVENT || frame.kind === FrameKind.RESULT || frame.kind === FrameKind.CALL) {
+      try {
+        const parsed = JSON.parse(frame.body.toString('utf8'));
+        console.info(`[sidecar] frame kind=${frame.kind}`, parsed);
+      } catch (err) {
+        console.warn(`[sidecar] frame kind=${frame.kind} non-json body (${frame.body.length}B)`);
+      }
+    } else {
+      console.info(`[sidecar] frame kind=${frame.kind} body=${frame.body.length}B`);
+    }
   }
 
   async shutdown(): Promise<void> {
