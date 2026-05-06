@@ -16,7 +16,9 @@ export interface PRConvEntry {
 export interface PRCommit { sha: string; msg: string; when: string }
 
 export const PR_DATA = {
-  num: 4131,
+  id: 4131,
+  externalId: 'gh_node_PR_kwDO_4131',
+  number: 4131,
   title: 'Bill cycle reducer: handle proration on mid-cycle plan switch',
   state: 'open',
   author: 'claude',

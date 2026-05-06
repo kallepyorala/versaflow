@@ -8,7 +8,7 @@ export function PRTabView() {
       <div className="pr-main">
         <div className="pr-header">
           <div className="pr-eyebrow">
-            <span className="pr-num">#{pr.num}</span>
+            <span className="pr-num">#{pr.number}</span>
             <span>·</span>
             <span>nume-billing</span>
             <span>·</span>

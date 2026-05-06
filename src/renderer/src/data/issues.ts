@@ -51,8 +51,8 @@ export const ISSUES_BY_STATUS: IssueGroup[] = [
         prState: 'open',
         checks: 'pass',
         prs: [
-          { pr: 4131, prState: 'open', checks: 'pass' },
-          { pr: 4135, prState: 'open', checks: 'pending' },
+          { id: 4131, number: 4131, prState: 'open', checks: 'pass' },
+          { id: 4135, number: 4135, prState: 'open', checks: 'pending' },
         ],
       },
       {

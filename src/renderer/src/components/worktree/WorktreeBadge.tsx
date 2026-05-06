@@ -44,7 +44,7 @@ export function WorktreeBadge({ it }: { it: Issue }) {
   }
 
   // pr
-  const prs = it.prs || (it.pr ? [{ pr: it.pr, prState: it.prState!, checks: it.checks! }] : []);
+  const prs = it.prs || (it.pr ? [{ id: it.pr, number: it.pr, prState: it.prState!, checks: it.checks! }] : []);
   const prCount = prs.length;
   const checks = it.checks || 'pass';
   const checksClass = checks === 'fail' ? 'pr-fail' : checks === 'pending' ? 'pr-pending' : 'pr-pass';
@@ -64,7 +64,7 @@ export function WorktreeBadge({ it }: { it: Issue }) {
       </span>
       <span className="tt tt-left">
         {prCount > 1
-          ? `${prCount} PRs · ${prs.map((p) => '#' + p.pr).join(', ')}`
+          ? `${prCount} PRs · ${prs.map((p) => '#' + p.number).join(', ')}`
           : `PR #${it.pr} — ${stateLabel} · ${checksLabel}`}
       </span>
     </span>

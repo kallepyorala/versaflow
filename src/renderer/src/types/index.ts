@@ -31,7 +31,14 @@ export interface Issue {
   pr?: number;
   prState?: PRState;
   checks?: ChecksState;
-  prs?: { pr: number; prState: PRState; checks: ChecksState }[];
+  prs?: { id: number; number: number; prState: PRState; checks: ChecksState }[];
+}
+
+export interface PullRequest {
+  id: number;
+  externalId: string;
+  number: number;
+  state: PRState;
 }
 
 export interface IssueGroup {
