@@ -1,3 +1,4 @@
+mod db;
 mod framing;
 
 use std::time::Instant;
@@ -14,6 +15,7 @@ async fn main() -> std::io::Result<()> {
         .init();
 
     let started_at = Instant::now();
+    let db = db::new_handle();
     let mut out = stdout();
     framing::write_frame(&mut out, framing::kind::EVENT, br#"{"type":"sidecar.ready"}"#).await?;
 
@@ -21,7 +23,7 @@ async fn main() -> std::io::Result<()> {
 
     loop {
         match framing::read_frame(&mut reader).await {
-            Ok(Some(frame)) => handle_frame(frame, started_at, &mut out).await?,
+            Ok(Some(frame)) => handle_frame(frame, started_at, db.clone(), &mut out).await?,
             Ok(None) => break,
             Err(err) => {
                 tracing::error!(error = ?err, "frame read error; exiting");
@@ -33,7 +35,12 @@ async fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-async fn handle_frame(frame: framing::Frame, started_at: Instant, out: &mut Stdout) -> std::io::Result<()> {
+async fn handle_frame(
+    frame: framing::Frame,
+    started_at: Instant,
+    db: db::DbHandle,
+    out: &mut Stdout,
+) -> std::io::Result<()> {
     if frame.kind != framing::kind::CALL {
         tracing::warn!(kind = frame.kind, "ignoring non-CALL frame");
         return Ok(());
@@ -48,12 +55,14 @@ async fn handle_frame(frame: framing::Frame, started_at: Instant, out: &mut Stdo
     };
     let id = req.get("id").cloned().unwrap_or(Value::Null);
     let method = req.get("method").and_then(Value::as_str).unwrap_or("");
+    let params = req.get("params").cloned().unwrap_or(Value::Null);
 
     let response = match method {
         "ping" => {
             let pong = started_at.elapsed().as_millis() as u64;
             json!({ "id": id, "ok": true, "result": { "pong": pong } })
         }
+        "vf:init" => handle_init(&id, &params, db).await,
         _ => json!({
             "id": id,
             "ok": false,
@@ -67,4 +76,27 @@ async fn handle_frame(frame: framing::Frame, started_at: Instant, out: &mut Stdo
     let body = serde_json::to_vec(&response)?;
     framing::write_frame(out, framing::kind::RESULT, &body).await?;
     Ok(())
+}
+
+async fn handle_init(id: &Value, params: &Value, db: db::DbHandle) -> Value {
+    let path = params.get("dbPath").and_then(Value::as_str).unwrap_or("");
+    if path.is_empty() {
+        return json!({
+            "id": id,
+            "ok": false,
+            "error": { "code": "invalid_params", "message": "missing dbPath" },
+        });
+    }
+
+    match db::init(db, path.to_string()).await {
+        Ok(user_version) => {
+            tracing::info!(db_path = %path, user_version, "db opened");
+            json!({ "id": id, "ok": true, "result": { "userVersion": user_version } })
+        }
+        Err(err) => json!({
+            "id": id,
+            "ok": false,
+            "error": { "code": "db_open_failed", "message": err.to_string() },
+        }),
+    }
 }

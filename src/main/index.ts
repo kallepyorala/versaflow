@@ -96,10 +96,16 @@ sidecar.on('frame', (frame: DecodedFrame) => {
       return;
     }
     case FrameKind.EVENT: {
+      let parsed: unknown;
       try {
-        broadcast('vf:event', JSON.parse(frame.body.toString('utf8')));
+        parsed = JSON.parse(frame.body.toString('utf8'));
       } catch (err) {
         console.warn('[sidecar] dropping non-json EVENT frame:', err);
+        return;
+      }
+      broadcast('vf:event', parsed);
+      if (typeof parsed === 'object' && parsed !== null && (parsed as { type?: string }).type === 'sidecar.ready') {
+        void initSidecarDb();
       }
       return;
     }
@@ -138,6 +144,16 @@ sidecar.on('frame', (frame: DecodedFrame) => {
 sidecar.on('exit', () => {
   rejectAllInflight({ code: 'sidecar_unavailable', message: 'sidecar exited' });
 });
+
+async function initSidecarDb(): Promise<void> {
+  const dbPath = join(app.getPath('userData'), 'cockpit.db');
+  try {
+    const result = await callSidecar('vf:init', { dbPath });
+    console.info('[sidecar] db init', { dbPath, result });
+  } catch (err) {
+    console.error('[sidecar] db init failed:', err);
+  }
+}
 
 ipcMain.handle('vf:call', async (_event, method: string, params: unknown): Promise<CallResultEnvelope> => {
   try {
