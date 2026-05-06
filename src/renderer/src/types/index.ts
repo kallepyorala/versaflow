@@ -16,7 +16,9 @@ export type AgentColor = 'c' | 'x' | 'g';
 export type AgentState = 'active' | 'leading' | 'errored' | 'idle';
 
 export interface Issue {
-  id: string;
+  id: number;
+  externalId: string;
+  externalKey: string;
   text: string;
   stat: IssueStatus;
   agents?: AgentColor[];

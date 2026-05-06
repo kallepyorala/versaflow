@@ -185,12 +185,12 @@ export function Sidebar({ ticker, onOpenSettings, collapsed, narrow }: SidebarPr
               <span>{g.title}</span>
               <span className="num">{g.items.length}</span>
             </div>
-            {g.items.map((it, ii) => (
-              <div key={ii} className="issue" aria-selected={it.selected || undefined}>
+            {g.items.map((it) => (
+              <div key={String(it.id)} className="issue" aria-selected={it.selected || undefined}>
                 <span className={`stat ${it.stat}`} />
                 <div className="issue-body">
                   <div className="issue-row issue-row-top">
-                    <span className="id">{it.id}</span>
+                    <span className="id">{it.externalKey}</span>
                     {it.spark && it.hot != null && (
                       <div className="spark">
                         {it.spark.map((h, i) => (
@@ -209,7 +209,7 @@ export function Sidebar({ ticker, onOpenSettings, collapsed, narrow }: SidebarPr
                 </div>
                 <WorktreeBadge it={it} />
                 {collapsed && (
-                  <span className="col-id">{it.wt === 'pr' ? `#${it.pr}` : it.id}</span>
+                  <span className="col-id">{it.wt === 'pr' ? `#${it.pr}` : it.externalKey}</span>
                 )}
               </div>
             ))}
