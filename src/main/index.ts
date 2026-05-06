@@ -1,7 +1,9 @@
 import { app, BrowserWindow, shell } from 'electron';
 import { join } from 'path';
+import { SidecarManager } from './sidecar';
 
 const isDev = !app.isPackaged;
+const sidecar = new SidecarManager();
 
 function createWindow(): void {
   const win = new BrowserWindow({
@@ -36,6 +38,7 @@ function createWindow(): void {
 }
 
 app.whenReady().then(() => {
+  sidecar.start();
   createWindow();
 
   app.on('activate', () => {
@@ -45,4 +48,12 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
+});
+
+let isQuitting = false;
+app.on('before-quit', (event) => {
+  if (isQuitting) return;
+  isQuitting = true;
+  event.preventDefault();
+  void sidecar.shutdown().finally(() => app.exit(0));
 });
