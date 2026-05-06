@@ -1,15 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
 import type { IssueStatus, Tweaks, TickerEvent } from '@/types';
-import { ISSUES_BY_STATUS } from '@/data/issues';
+import { STATUS_META } from '@/data/issues';
+import { useIssuesByStatus } from '@/store/store';
 import { I } from '@/icons';
 import { StatusDot } from '@/components/common/StatusDot';
 import { FilterMenu, type FilterSub } from './FilterMenu';
 import { DisplayMenu, type Grouping, type Ordering } from './DisplayMenu';
 import { AvatarMenu } from './AvatarMenu';
-import { WorktreeBadge } from '@/components/worktree/WorktreeBadge';
 import { ActivityFeed } from '@/components/layout/ActivityFeed';
 import logoMark from '@/assets/logo-mark.svg?raw';
 import logoWordmark from '@/assets/logo-wordmark.svg?raw';
+
+const STATUS_ORDER: { key: IssueStatus; live?: boolean }[] = [
+  { key: 'backlog' },
+  { key: 'todo' },
+  { key: 'in_progress', live: true },
+  { key: 'in_review' },
+  { key: 'in_verification' },
+  { key: 'done' },
+  { key: 'cancelled' },
+];
 
 interface SidebarProps {
   tweaks: Tweaks;
@@ -51,10 +61,25 @@ export function Sidebar({ ticker, onOpenSettings, collapsed, narrow }: SidebarPr
     });
   };
 
-  const groups = ISSUES_BY_STATUS.filter((g) => {
-    if (!showCompleted && (g.key === 'done' || g.key === 'cancelled')) return false;
-    if (statusFilter.size > 0 && !statusFilter.has(g.key)) return false;
-    return true;
+  const itemsByStatus = {
+    backlog: useIssuesByStatus('backlog'),
+    todo: useIssuesByStatus('todo'),
+    in_progress: useIssuesByStatus('in_progress'),
+    in_review: useIssuesByStatus('in_review'),
+    in_verification: useIssuesByStatus('in_verification'),
+    done: useIssuesByStatus('done'),
+    cancelled: useIssuesByStatus('cancelled'),
+  };
+
+  const groups = STATUS_ORDER.flatMap((s) => {
+    if (!showCompleted && (s.key === 'done' || s.key === 'cancelled')) return [];
+    if (statusFilter.size > 0 && !statusFilter.has(s.key)) return [];
+    return [{
+      key: s.key,
+      title: STATUS_META[s.key].label,
+      live: s.live,
+      items: itemsByStatus[s.key],
+    }];
   });
 
   // Activity feed height (resizable). Persisted to localStorage.
@@ -178,38 +203,26 @@ export function Sidebar({ ticker, onOpenSettings, collapsed, narrow }: SidebarPr
       </div>
 
       <div className="issues-scroll" style={{ flex: '1 1 0', minHeight: 120 }}>
-        {groups.map((g, gi) => (
-          <div className="group" key={gi}>
+        {groups.map((g) => (
+          <div className="group" key={g.key}>
             <div className={`group-h ${g.live ? 'live' : ''}`}>
               <StatusDot kind={g.key} />
               <span>{g.title}</span>
               <span className="num">{g.items.length}</span>
             </div>
             {g.items.map((it) => (
-              <div key={String(it.id)} className="issue" aria-selected={it.selected || undefined}>
-                <span className={`stat ${it.stat}`} />
+              <div key={String(it.id)} className="issue">
+                <span className={`stat ${it.status}`} />
                 <div className="issue-body">
                   <div className="issue-row issue-row-top">
-                    <span className="id">{it.externalKey}</span>
-                    {it.spark && it.hot != null && (
-                      <div className="spark">
-                        {it.spark.map((h, i) => (
-                          <span
-                            key={i}
-                            className={i >= it.hot! - 3 ? 'hot' : ''}
-                            style={{ height: Math.max(2, Math.round(h * 0.6)) + 'px' }}
-                          />
-                        ))}
-                      </div>
-                    )}
+                    <span className="id">{it.externalKey ?? ''}</span>
                   </div>
                   <div className="issue-row issue-row-bot">
-                    <span className="title">{it.text}</span>
+                    <span className="title">{it.title}</span>
                   </div>
                 </div>
-                <WorktreeBadge it={it} />
                 {collapsed && (
-                  <span className="col-id">{it.wt === 'pr' ? `#${it.pr}` : it.externalKey}</span>
+                  <span className="col-id">{it.externalKey ?? ''}</span>
                 )}
               </div>
             ))}

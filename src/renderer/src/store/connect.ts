@@ -1,9 +1,9 @@
 import { decode } from '@msgpack/msgpack';
+import { applyDelta, hydrate } from './store';
 import type { BootSnapshot, Delta } from './protocol';
 
 // Wires the renderer to the sidecar via the preload's BOOT/DELTA channels.
-// Hydrating the store from BOOT and applying DELTA lands in #18 — for now
-// this only exercises the decode path and logs both.
+// BOOT clears + repopulates the store; DELTA upserts/removes incrementally.
 export function connectStore(): () => void {
   if (typeof window === 'undefined' || !window.versaflow) {
     return () => {};
@@ -12,7 +12,7 @@ export function connectStore(): () => void {
   const offBoot = window.versaflow.onBoot((payload) => {
     try {
       const snapshot = decode(payload) as BootSnapshot;
-      console.info('[store] BOOT', snapshot);
+      hydrate(snapshot);
     } catch (err) {
       console.error('[store] BOOT msgpack decode failed', err);
     }
@@ -21,7 +21,7 @@ export function connectStore(): () => void {
   const offDelta = window.versaflow.onDelta((payload) => {
     try {
       const delta = decode(payload) as Delta;
-      console.info('[store] DELTA', delta);
+      applyDelta(delta);
     } catch (err) {
       console.error('[store] DELTA msgpack decode failed', err);
     }
