@@ -3,8 +3,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use rusqlite::{Connection, params};
 
 pub const MIGRATIONS: &[&str] = &[
-    // Migrations land in subsequent issues. The 1-based index of each entry
-    // is the migration id and becomes `PRAGMA user_version` once applied.
+    // 0001 — providers, workspaces, status_map, issue + FTS5
+    include_str!("../migrations/0001_core.sql"),
 ];
 
 #[derive(Debug, thiserror::Error)]
