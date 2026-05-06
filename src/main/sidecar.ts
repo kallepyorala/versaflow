@@ -57,6 +57,7 @@ export class SidecarManager extends EventEmitter {
       const wasUp = Date.now() - this.startedAt;
       console.info(`[sidecar] exited code=${code} signal=${signal} after ${wasUp}ms`);
       this.child = null;
+      this.emit('exit', { code, signal });
 
       if (this.shuttingDown) return;
 

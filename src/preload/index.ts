@@ -19,9 +19,18 @@ const subscribeBoot = makeChannel<Uint8Array>('vf:boot');
 const subscribeDelta = makeChannel<Uint8Array>('vf:delta');
 const subscribeEvent = makeChannel<unknown>('vf:event');
 
+interface CallError { code: string; message: string }
+type CallResultEnvelope =
+  | { ok: true; value: unknown }
+  | { ok: false; error: CallError };
+
 const api = {
-  call: (method: string, params?: unknown): Promise<unknown> =>
-    ipcRenderer.invoke('vf:call', method, params),
+  call: async (method: string, params?: unknown): Promise<unknown> => {
+    const res = (await ipcRenderer.invoke('vf:call', method, params)) as CallResultEnvelope;
+    if (res && res.ok) return res.value;
+    const err = res?.error ?? { code: 'unknown', message: 'call failed' };
+    throw new Error(err.message, { cause: err });
+  },
 
   subscribe: (cb: (delta: unknown) => void): (() => void) => {
     const offBoot = subscribeBoot(cb);

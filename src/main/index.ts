@@ -44,6 +44,46 @@ function broadcast(channel: string, payload: unknown): void {
   }
 }
 
+interface CallError { code: string; message: string }
+type CallResultEnvelope =
+  | { ok: true; value: unknown }
+  | { ok: false; error: CallError };
+
+const CALL_TIMEOUT_MS = 30_000;
+let nextCallId = 1;
+const inflight = new Map<number, {
+  resolve: (value: unknown) => void;
+  reject: (error: CallError) => void;
+  timer: NodeJS.Timeout;
+}>();
+
+function rejectAllInflight(error: CallError): void {
+  for (const [id, entry] of inflight) {
+    clearTimeout(entry.timer);
+    entry.reject(error);
+    inflight.delete(id);
+  }
+}
+
+function callSidecar(method: string, params: unknown): Promise<unknown> {
+  return new Promise((resolve, reject) => {
+    const id = nextCallId++;
+    const timer = setTimeout(() => {
+      inflight.delete(id);
+      reject({ code: 'timeout', message: `call ${method} timed out after ${CALL_TIMEOUT_MS}ms` });
+    }, CALL_TIMEOUT_MS);
+    inflight.set(id, { resolve, reject, timer });
+
+    const body = Buffer.from(JSON.stringify({ id, method, params: params ?? null }));
+    const sent = sidecar.sendFrame(FrameKind.CALL, body);
+    if (!sent) {
+      clearTimeout(timer);
+      inflight.delete(id);
+      reject({ code: 'sidecar_unavailable', message: 'sidecar not available' });
+    }
+  });
+}
+
 sidecar.on('frame', (frame: DecodedFrame) => {
   switch (frame.kind) {
     case FrameKind.BOOT: {
@@ -64,8 +104,30 @@ sidecar.on('frame', (frame: DecodedFrame) => {
       return;
     }
     case FrameKind.RESULT: {
-      // Correlation lands in a later issue — for now just log.
-      console.info(`[sidecar] RESULT frame body=${frame.body.length}B`);
+      let parsed: { id?: unknown; ok?: unknown; result?: unknown; error?: unknown };
+      try {
+        parsed = JSON.parse(frame.body.toString('utf8'));
+      } catch (err) {
+        console.warn('[sidecar] dropping non-json RESULT frame:', err);
+        return;
+      }
+      const id = typeof parsed.id === 'number' ? parsed.id : -1;
+      const entry = inflight.get(id);
+      if (!entry) {
+        console.warn(`[sidecar] RESULT for unknown id=${id}`);
+        return;
+      }
+      inflight.delete(id);
+      clearTimeout(entry.timer);
+      if (parsed.ok === true) {
+        entry.resolve(parsed.result ?? null);
+      } else {
+        const err = (parsed.error ?? {}) as Partial<CallError>;
+        entry.reject({
+          code: typeof err.code === 'string' ? err.code : 'unknown',
+          message: typeof err.message === 'string' ? err.message : 'call rejected',
+        });
+      }
       return;
     }
     default:
@@ -73,12 +135,24 @@ sidecar.on('frame', (frame: DecodedFrame) => {
   }
 });
 
-ipcMain.handle('vf:call', (_event, method: string, params: unknown) => {
-  const body = Buffer.from(JSON.stringify({ method, params: params ?? null }));
-  const ok = sidecar.sendFrame(FrameKind.CALL, body);
-  if (!ok) throw new Error('sidecar not available');
-  // Correlation lands in #10; for now CALL is fire-and-forget.
-  return undefined;
+sidecar.on('exit', () => {
+  rejectAllInflight({ code: 'sidecar_unavailable', message: 'sidecar exited' });
+});
+
+ipcMain.handle('vf:call', async (_event, method: string, params: unknown): Promise<CallResultEnvelope> => {
+  try {
+    const value = await callSidecar(method, params);
+    return { ok: true, value };
+  } catch (err) {
+    const e = err as Partial<CallError>;
+    return {
+      ok: false,
+      error: {
+        code: typeof e.code === 'string' ? e.code : 'unknown',
+        message: typeof e.message === 'string' ? e.message : 'call failed',
+      },
+    };
+  }
 });
 
 app.whenReady().then(() => {

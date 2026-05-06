@@ -88,6 +88,17 @@ export function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, [zenMode]);
 
+  // Smoke-test the sidecar JSON-RPC round-trip during development.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.versaflow) return;
+    window.versaflow.call('ping')
+      .then((res) => console.info('[vf:call ping]', res))
+      .catch((err) => console.warn('[vf:call ping] failed', err));
+    window.versaflow.call('does_not_exist')
+      .then((res) => console.warn('[vf:call does_not_exist] unexpected ok', res))
+      .catch((err: Error) => console.info('[vf:call does_not_exist] rejected as expected', err.cause));
+  }, []);
+
   const closeTab = (id: string) => {
     setTabs((prev) => {
       const idx = prev.findIndex((t) => t.id === id);
