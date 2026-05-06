@@ -9,6 +9,9 @@ pub const MIGRATIONS: &[&str] = &[
     include_str!("../migrations/0002_worktree_pr_comment.sql"),
     // 0003 — agent_*, preview_target, outbox, sync_state, ui_state, ticker_event
     include_str!("../migrations/0003_agents_outbox_sync.sql"),
+    // 0099 — fixture-equivalent seed so the cockpit stays functional. Last on
+    // purpose; will be swapped for a real bootstrap source eventually.
+    include_str!("../migrations/0099_seed.sql"),
 ];
 
 #[derive(Debug, thiserror::Error)]

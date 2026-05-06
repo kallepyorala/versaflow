@@ -1,5 +1,5 @@
 import type { IssueStatus } from '@/types';
-import { STATUS_META } from '@/data/issues';
+import { STATUS_META } from '@/data/status-meta';
 
 export function StatusDot({ kind, size = 10 }: { kind: IssueStatus; size?: number }) {
   const m = STATUS_META[kind] || STATUS_META.backlog;

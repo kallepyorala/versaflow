@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { IssueStatus, Tweaks, TickerEvent } from '@/types';
-import { STATUS_META } from '@/data/issues';
+import { STATUS_META } from '@/data/status-meta';
 import { useIssuesByStatus } from '@/store/store';
 import { I } from '@/icons';
 import { StatusDot } from '@/components/common/StatusDot';

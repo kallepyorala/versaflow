@@ -1,5 +1,5 @@
 import type { IssueStatus } from '@/types';
-import { STATUSES, STATUS_META } from '@/data/issues';
+import { STATUSES, STATUS_META } from '@/data/status-meta';
 import { StatusDot } from '@/components/common/StatusDot';
 
 export type FilterSub = 'team' | 'status' | 'status_type' | 'assignee' | 'priority' | null;

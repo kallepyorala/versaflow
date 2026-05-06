@@ -1,3 +1,4 @@
+mod bootstrap;
 mod db;
 mod framing;
 mod migrations;
@@ -80,21 +81,18 @@ async fn handle_frame(
     Ok(())
 }
 
-async fn handle_ready(id: &Value, _db: db::DbHandle, out: &mut Stdout) -> std::io::Result<Value> {
-    // Real workspace seeding lands in #19 — for now emit an empty BOOT so
-    // the renderer's decode path is exercised end-to-end.
-    let snapshot = json!({
-        "workspace": null,
-        "context": {},
-        "issues": [],
-        "worktrees": [],
-        "prs": [],
-        "comments": [],
-        "checks": [],
-        "sessions": [],
-        "ticker": [],
-        "uiState": {},
-    });
+async fn handle_ready(id: &Value, db: db::DbHandle, out: &mut Stdout) -> std::io::Result<Value> {
+    let snapshot = match bootstrap::build(db).await {
+        Ok(v) => v,
+        Err(err) => {
+            tracing::error!(error = ?err, "BOOT query failed");
+            return Ok(json!({
+                "id": id,
+                "ok": false,
+                "error": { "code": "boot_query_failed", "message": err.to_string() },
+            }));
+        }
+    };
     match rmp_serde::to_vec_named(&snapshot) {
         Ok(body) => {
             framing::write_frame(out, framing::kind::BOOT, &body).await?;
