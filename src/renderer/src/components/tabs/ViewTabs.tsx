@@ -2,7 +2,7 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import type { Tab } from '@/types';
 import {
   ICON_DIFF, ICON_TERM, ICON_MD, ICON_FILE, ICON_OVERVIEW, ICON_ISSUE, ICON_PR,
-  ICON_PLUS, ICON_X, ICON_SPLIT, ICON_ZEN_ENTER, ICON_ZEN_EXIT,
+  ICON_PREVIEW, ICON_PLUS, ICON_X, ICON_SPLIT, ICON_ZEN_ENTER, ICON_ZEN_EXIT,
 } from '@/icons';
 import type { AddKind } from './tabs';
 
@@ -56,6 +56,7 @@ export function ViewTabs({
         { id: 'codex', name: 'codex', desc: 'New chat with codex.' },
         { id: 'compare', name: 'compare', desc: 'Race agents side-by-side.' },
         { id: 'term', name: 'terminal', desc: 'Shell session.' },
+        { id: 'preview', name: 'preview', desc: 'Live runtime view.' },
         { id: 'md', name: 'markdown', desc: 'Open a markdown doc.' },
       ]
     : [{ id: 'md', name: 'markdown', desc: 'Open a markdown doc.' }];
@@ -72,6 +73,7 @@ export function ViewTabs({
       case 'file': return ICON_FILE;
       case 'overview': return ICON_OVERVIEW;
       case 'issue': return ICON_ISSUE;
+      case 'preview': return ICON_PREVIEW;
       default: return null;
     }
   };
@@ -82,7 +84,7 @@ export function ViewTabs({
         const tabIcon = 'icon' in t ? tabIconFor(t.icon) : null;
         const isActive = active === t.id;
         const insertSep = i > 0 && tabs[i - 1].kind !== t.kind;
-        const closeable = t.kind === 'chat' || t.kind === 'term' || t.kind === 'md' || t.kind === 'compare';
+        const closeable = t.kind === 'chat' || t.kind === 'term' || t.kind === 'md' || t.kind === 'compare' || t.kind === 'preview';
         return (
           <Fragment key={t.id}>
             {insertSep && <span className="vtab-sep" />}

@@ -18,6 +18,7 @@ import { TicketDoc } from '@/components/docs/TicketDoc';
 import { DiffTabView } from '@/components/diff/DiffTabView';
 import { PRTabView } from '@/components/pr/PRTabView';
 import { CompareTabView } from '@/components/compare/CompareTabView';
+import { PreviewView } from '@/components/preview/PreviewView';
 import { BranchSelector } from '@/components/worktree/BranchSelector';
 import { AddWorktreeDialog } from '@/components/worktree/AddWorktreeDialog';
 import { SettingsModal } from '@/components/settings/SettingsModal';
@@ -113,6 +114,7 @@ export function App() {
       else if (kind === 'codex')  tab = { id, kind: 'chat', label: 'codex',  agent: 'x', state: 'idle' };
       else if (kind === 'term')   tab = { id, kind: 'term', label: 'Terminal' + (sameKindCount ? ' ' + (sameKindCount + 1) : ''), icon: 'term' };
       else if (kind === 'compare') tab = { id, kind: 'compare', label: 'Compare' + (sameKindCount ? ' ' + (sameKindCount + 1) : ''), icon: 'diff' };
+      else if (kind === 'preview') tab = { id, kind: 'preview', label: 'Preview' + (sameKindCount ? ' ' + (sameKindCount + 1) : ''), icon: 'preview', previewId: Date.now() };
       else                        tab = { id, kind: 'md', label: 'Untitled.md', icon: 'md' };
       const next = [...prev, tab];
       setActiveTab(id);
@@ -324,6 +326,7 @@ export function App() {
             {active?.kind === 'term' && <TerminalView split={termSplit} />}
             {active?.kind === 'overview' && <OverviewView hasWorktree={tweaks.hasWorktree} />}
             {active?.kind === 'issue' && <IssueView />}
+            {active?.kind === 'preview' && <PreviewView />}
             {active?.kind === 'md' && activeTab === 'review' && <ReviewDoc />}
             {active?.kind === 'md' && activeTab === 'ticket' && <TicketDoc />}
             {active?.kind === 'md' && activeTab !== 'review' && activeTab !== 'ticket' && <TicketDoc />}

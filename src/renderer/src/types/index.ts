@@ -170,7 +170,8 @@ export type Tab =
   | (TabKindBase & { kind: 'compare'; icon: 'diff' })
   | (TabKindBase & { kind: 'chat'; agent: AgentColor; state: 'running' | 'idle' | 'errored' })
   | (TabKindBase & { kind: 'term'; icon: 'term'; split?: boolean })
-  | (TabKindBase & { kind: 'md'; icon: 'md' });
+  | (TabKindBase & { kind: 'md'; icon: 'md' })
+  | (TabKindBase & { kind: 'preview'; previewId: number; icon: 'preview' });
 
 export interface OvComment {
   id: number;

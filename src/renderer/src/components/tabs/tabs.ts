@@ -19,4 +19,4 @@ export const NO_WT_TABS: Tab[] = [
   { id: 'issue',    kind: 'issue',   label: 'Issue',     icon: 'issue' },
 ];
 
-export type AddKind = 'claude' | 'codex' | 'compare' | 'term' | 'md';
+export type AddKind = 'claude' | 'codex' | 'compare' | 'term' | 'md' | 'preview';
