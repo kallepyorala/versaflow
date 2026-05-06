@@ -5,6 +5,8 @@ use rusqlite::{Connection, params};
 pub const MIGRATIONS: &[&str] = &[
     // 0001 — providers, workspaces, status_map, issue + FTS5
     include_str!("../migrations/0001_core.sql"),
+    // 0002 — worktree, pr, issue_pr, comment, pr_check, diff_file
+    include_str!("../migrations/0002_worktree_pr_comment.sql"),
 ];
 
 #[derive(Debug, thiserror::Error)]
