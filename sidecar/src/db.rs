@@ -2,6 +2,8 @@ use std::sync::{Arc, Mutex};
 
 use rusqlite::Connection;
 
+use crate::migrations;
+
 pub type DbHandle = Arc<Mutex<Option<Connection>>>;
 
 const INIT_PRAGMAS: &str = "
@@ -23,16 +25,19 @@ pub fn new_handle() -> DbHandle {
 pub enum DbError {
     #[error("sqlite: {0}")]
     Sqlite(#[from] rusqlite::Error),
+    #[error("migration: {0}")]
+    Migration(#[from] migrations::MigrationError),
     #[error("blocking task panicked")]
     Join,
 }
 
 pub async fn init(handle: DbHandle, path: String) -> Result<u32, DbError> {
     let path_for_task = path.clone();
-    let (conn, user_version) = tokio::task::spawn_blocking(move || -> Result<_, rusqlite::Error> {
-        let conn = Connection::open(&path_for_task)?;
+    let (conn, user_version) = tokio::task::spawn_blocking(move || -> Result<_, DbError> {
+        let mut conn = Connection::open(&path_for_task)?;
         // execute_batch handles the multi-statement PRAGMA block.
         conn.execute_batch(INIT_PRAGMAS)?;
+        migrations::run(&mut conn)?;
         let user_version: u32 = conn.query_row("PRAGMA user_version", [], |r| r.get(0))?;
         Ok((conn, user_version))
     })

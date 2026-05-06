@@ -1,5 +1,6 @@
 mod db;
 mod framing;
+mod migrations;
 
 use std::time::Instant;
 
