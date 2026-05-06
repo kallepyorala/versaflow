@@ -7,6 +7,8 @@ pub const MIGRATIONS: &[&str] = &[
     include_str!("../migrations/0001_core.sql"),
     // 0002 — worktree, pr, issue_pr, comment, pr_check, diff_file
     include_str!("../migrations/0002_worktree_pr_comment.sql"),
+    // 0003 — agent_*, preview_target, outbox, sync_state, ui_state, ticker_event
+    include_str!("../migrations/0003_agents_outbox_sync.sql"),
 ];
 
 #[derive(Debug, thiserror::Error)]
